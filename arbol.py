@@ -1,30 +1,36 @@
+from turtle import pos
 from manim import *
 class TreeScene(Scene):
     CONFIG={
-        'iteraciones':5
+        'iteraciones':5,
+        'angle':40*DEGREES,
     }
     def construct(self):
-        ghost_line=Line(3*DOWN,4*DOWN).fade(1).center()
-        self.first_line(ghost_line)
-        for _ in range(self.CONFIG['iteraciones']):
-            self.first_line(self.line_left,-PI/2+self.line_left.get_angle(),self.line_left.get_length()/2)
-    def first_line(self,path,angle=0,length=3):
-        line=Line(UP,DOWN).rotate(angle).set_length(length)
-        line.move_to(path.points[-1],line.points[0])
-        self.line_left,self.line_right=line.copy(),line.copy()
-        self.play(Create(line))
-        self.play(*[
-            Rotate(
-                mob,angle,about_point=line.points[0]
-            ) for mob,angle in zip([self.line_left,self.line_right],[-140*DEGREES, 140*DEGREES])
-        ])
-    def first_line_2(self,path,angle=0,length=3):
-        line=Line(UP,DOWN).rotate(angle).set_length(length)
-        line.move_to(path.points[-1],line.points[0])
-        self.line_left,self.line_right=line.copy(),line.copy()
-        self.play(Create(line))
-        self.play(*[
-            Rotate(
-                mob,angle,about_point=line.points[0]
-            ) for mob,angle in zip([self.line_left,self.line_right],[-140*DEGREES, 140*DEGREES])
-        ])
+        first_path=Line(ORIGIN,3*DOWN)
+        first_path.angle=0*DEGREES
+        first_path.length=first_path.get_length()
+        PATHS=VGroup()
+        self.play(Create(first_path))
+        line_left, line_right=self.getting_branch(first_path)
+        self.play(Create(line_left),Create(line_right))
+        PATHS.add(line_left,line_right)
+        line_left=self.getting_branch(line_left)
+        line_right=self.getting_branch(line_right)
+        self.play(Create(line_left),Create(line_right))
+        self.wait()
+    def getting_branch(self,path):
+        line_left=path.copy()
+        line_right=path.copy()
+        line_left.set_length(path.length/2)
+        line_right.set_length(path.length/2)
+        line_left.move_to(path.points[0],line_left.points[-1])
+        line_right.move_to(path.points[0],line_right.points[-1])
+        line_left.rotate(
+            angle=path.angle-self.CONFIG['angle']+2*PI,
+            about_point=path.points[0]
+        )
+        line_right.rotate(
+            angle=path.angle+self.CONFIG['angle']-2*PI,
+            about_point=path.points[0]
+        )
+        return VGroup(line_left,line_right)
