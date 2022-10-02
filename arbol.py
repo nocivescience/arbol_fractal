@@ -14,10 +14,14 @@ class TreeScene(Scene):
         line_left, line_right=self.getting_branch(first_path)
         self.play(Create(line_left),Create(line_right))
         PATHS.add(line_left,line_right)
-        line_left=self.getting_branch(line_left)
-        line_right=self.getting_branch(line_right)
-        self.play(Create(line_left),Create(line_right))
-        self.play(Create(line_left),Create(line_right))
+        line_left_2,line_right_2=self.getting_branch(line_right)
+        line_left_3,line_right_3=self.getting_branch(line_left)
+        self.play(Create(line_left_2),Create(line_right_2))
+        self.play(Create(line_left_3),Create(line_right_3))
+        line_left_4,line_right_4=self.getting_branch(line_left)
+        self.play(
+            Create(line_left_4),Create(line_right_4)
+        )
         self.wait()
     def getting_branch(self,path):
         line_left=path.copy()
