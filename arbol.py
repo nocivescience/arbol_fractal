@@ -17,6 +17,7 @@ class TreeScene(Scene):
         line_left=self.getting_branch(line_left)
         line_right=self.getting_branch(line_right)
         self.play(Create(line_left),Create(line_right))
+        self.play(Create(line_left),Create(line_right))
         self.wait()
     def getting_branch(self,path):
         line_left=path.copy()
